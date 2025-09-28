@@ -1,4 +1,4 @@
-name: Build Flutter APK
+name: Build Flutter Windows EXE
 
 on:
   push:
@@ -7,8 +7,8 @@ on:
 
 jobs:
   build:
-    name: Build APK
-    runs-on: ubuntu-latest
+    name: Build Windows EXE
+    runs-on: windows-latest
 
     steps:
       - name: Checkout repository
@@ -17,7 +17,7 @@ jobs:
       - name: Cache Flutter SDK
         uses: actions/cache@v3
         with:
-          path: ~/.flutter
+          path: C:\flutter
           key: ${{ runner.os }}-flutter-sdk-${{ hashFiles('**/pubspec.yaml') }}
           restore-keys: |
             ${{ runner.os }}-flutter-sdk-
@@ -31,7 +31,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            ~/.pub-cache
+            C:\Users\runneradmin\AppData\Roaming\Pub\Cache
             .dart_tool
           key: ${{ runner.os }}-flutter-deps-${{ hashFiles('**/pubspec.yaml') }}
           restore-keys: |
@@ -40,11 +40,11 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Build release APK (split per ABI)
-        run: flutter build apk --release --split-per-abi
+      - name: Build Windows release EXE
+        run: flutter build windows --release
 
-      - name: Upload APK artifacts
+      - name: Upload Windows EXE artifact
         uses: actions/upload-artifact@v4
         with:
-          name: release-apks
-          path: build/app/outputs/flutter-apk/*.apk
+          name: release-windows-exe
+          path: build/windows/runner/Release/*.exe
